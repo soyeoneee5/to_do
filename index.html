@@ -14,6 +14,8 @@
       --accent: #e75b3e;
       --accent-dark: #c9452c;
       --green: #477a62;
+      --star: #f2b705;
+      --star-muted: #d8d2c8;
       --shadow: 0 24px 70px rgba(61, 48, 36, 0.13);
     }
 
@@ -81,10 +83,13 @@
     }
 
     .input-row {
-      display: flex;
-      gap: 10px;
       padding-bottom: 26px;
       border-bottom: 1px solid var(--line);
+    }
+
+    .entry-row {
+      display: flex;
+      gap: 10px;
     }
 
     #todo-input {
@@ -129,6 +134,55 @@
     }
 
     #add-button:active { transform: translateY(0); }
+
+    .priority-picker {
+      margin: 14px 0 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+    }
+
+    .priority-picker legend {
+      padding: 0;
+      float: left;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .star-button {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: var(--star-muted);
+      font-size: 1.35rem;
+      line-height: 1;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: transparent;
+      transition: color 0.18s, background 0.18s, transform 0.18s;
+    }
+
+    .star-button.active { color: var(--star); }
+
+    .star-button:hover,
+    .star-button:focus-visible {
+      color: var(--star);
+      background: rgba(242, 183, 5, 0.12);
+      outline: none;
+      transform: scale(1.1);
+    }
 
     .list-header {
       margin: 24px 2px 12px;
@@ -176,10 +230,26 @@
     }
 
     .todo-text {
-      flex: 1;
       overflow-wrap: anywhere;
       line-height: 1.5;
       transition: color 0.2s;
+    }
+
+    .todo-content {
+      min-width: 0;
+      flex: 1;
+      display: grid;
+      gap: 4px;
+    }
+
+    .item-priority {
+      width: max-content;
+    }
+
+    .item-priority .star-button {
+      width: 22px;
+      height: 22px;
+      font-size: 1rem;
     }
 
     .completed .todo-text {
@@ -229,8 +299,9 @@
     @media (max-width: 520px) {
       body { padding: 16px; }
       .app { padding: 28px 20px; border-radius: 24px; }
-      .input-row { flex-direction: column; }
+      .entry-row { flex-direction: column; }
       #add-button { min-height: 52px; }
+      .priority-picker { justify-content: center; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -245,15 +316,21 @@
     <p class="subtitle">해야 할 일을 가볍게 적고, 하나씩 완료해 보세요.</p>
 
     <form id="todo-form" class="input-row">
-      <input
-        id="todo-input"
-        type="text"
-        placeholder="예: 오후 3시 회의 준비"
-        aria-label="새 할 일"
-        autocomplete="off"
-        maxlength="120"
-      >
-      <button id="add-button" type="submit">추가</button>
+      <div class="entry-row">
+        <input
+          id="todo-input"
+          type="text"
+          placeholder="예: 오후 3시 회의 준비"
+          aria-label="새 할 일"
+          autocomplete="off"
+          maxlength="120"
+        >
+        <button id="add-button" type="submit">추가</button>
+      </div>
+      <fieldset class="priority-picker">
+        <legend>중요도</legend>
+        <div id="new-priority" class="stars" aria-label="새 할 일 중요도"></div>
+      </fieldset>
     </form>
 
     <div class="list-header">
@@ -269,12 +346,18 @@
     const input = document.querySelector("#todo-input");
     const list = document.querySelector("#todo-list");
     const count = document.querySelector("#todo-count");
+    const newPriority = document.querySelector("#new-priority");
 
     let todos = loadTodos();
+    let selectedPriority = 1;
 
     function loadTodos() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const savedTodos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        return savedTodos.map((todo) => ({
+          ...todo,
+          priority: Math.min(3, Math.max(1, Number(todo.priority) || 1))
+        }));
       } catch {
         return [];
       }
@@ -282,6 +365,39 @@
 
     function saveTodos() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    }
+
+    function createStars(priority, onChange, label) {
+      const stars = document.createElement("div");
+      stars.className = "stars";
+      stars.setAttribute("role", "group");
+      stars.setAttribute("aria-label", label);
+
+      for (let level = 1; level <= 3; level += 1) {
+        const star = document.createElement("button");
+        star.className = `star-button${level <= priority ? " active" : ""}`;
+        star.type = "button";
+        star.textContent = "★";
+        star.setAttribute("aria-label", `중요도 별 ${level}개`);
+        star.setAttribute("aria-pressed", String(level === priority));
+        star.addEventListener("click", () => onChange(level));
+        stars.append(star);
+      }
+
+      return stars;
+    }
+
+    function renderNewPriority() {
+      const stars = createStars(
+        selectedPriority,
+        (level) => {
+          selectedPriority = level;
+          renderNewPriority();
+          input.focus();
+        },
+        "새 할 일 중요도 선택"
+      );
+      newPriority.replaceChildren(...stars.children);
     }
 
     function renderTodos() {
@@ -308,6 +424,17 @@
           text.className = "todo-text";
           text.textContent = todo.text;
 
+          const content = document.createElement("div");
+          content.className = "todo-content";
+
+          const priority = createStars(
+            todo.priority,
+            (level) => setPriority(todo.id, level),
+            `${todo.text} 중요도 선택`
+          );
+          priority.classList.add("item-priority");
+          content.append(text, priority);
+
           const deleteButton = document.createElement("button");
           deleteButton.className = "delete-button";
           deleteButton.type = "button";
@@ -319,7 +446,7 @@
             </svg>`;
           deleteButton.addEventListener("click", () => deleteTodo(todo.id));
 
-          item.append(checkbox, text, deleteButton);
+          item.append(checkbox, content, deleteButton);
           list.append(item);
         });
       }
@@ -328,8 +455,16 @@
       count.textContent = `남은 할 일 ${remaining}개`;
     }
 
-    function addTodo(text) {
-      todos.unshift({ id: crypto.randomUUID(), text, completed: false });
+    function addTodo(text, priority) {
+      todos.unshift({ id: crypto.randomUUID(), text, completed: false, priority });
+      saveTodos();
+      renderTodos();
+    }
+
+    function setPriority(id, priority) {
+      todos = todos.map((todo) =>
+        todo.id === id ? { ...todo, priority } : todo
+      );
       saveTodos();
       renderTodos();
     }
@@ -355,11 +490,12 @@
         input.focus();
         return;
       }
-      addTodo(text);
+      addTodo(text, selectedPriority);
       input.value = "";
       input.focus();
     });
 
+    renderNewPriority();
     renderTodos();
   </script>
 </body>
