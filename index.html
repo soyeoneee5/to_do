@@ -58,13 +58,69 @@
       border-radius: 50%;
     }
 
+    .top-row {
+      min-height: 40px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
     .eyebrow {
-      margin: 0 0 8px;
+      margin: 7px 0 8px;
       color: var(--accent);
       font-size: 0.78rem;
       font-weight: 800;
       letter-spacing: 0.18em;
       text-transform: uppercase;
+    }
+
+    .auth-button,
+    .logout-button {
+      min-height: 38px;
+      padding: 0 15px;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.82);
+      transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .auth-button:hover,
+    .logout-button:hover {
+      color: var(--accent);
+      border-color: rgba(231, 91, 62, 0.36);
+      background: #fff;
+      transform: translateY(-1px);
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-email {
+      max-width: 200px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .logout-button {
+      min-height: 34px;
+      padding: 0 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
     }
 
     h1 {
@@ -291,17 +347,160 @@
       font-size: 1.8rem;
     }
 
+    .auth-dialog {
+      width: min(calc(100% - 32px), 430px);
+      padding: 0;
+      color: var(--ink);
+      border: 0;
+      border-radius: 24px;
+      background: #fffdf9;
+      box-shadow: 0 28px 90px rgba(45, 33, 24, 0.28);
+    }
+
+    .auth-dialog::backdrop {
+      background: rgba(36, 34, 31, 0.48);
+      backdrop-filter: blur(5px);
+    }
+
+    .auth-dialog[open] { animation: modal-in 0.22s ease both; }
+
+    .auth-panel { padding: 30px; }
+
+    .auth-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .auth-kicker {
+      margin: 0 0 7px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .auth-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", "Nanum Myeongjo", serif;
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+
+    .close-dialog {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 1.5rem;
+      line-height: 1;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .close-dialog:hover { color: var(--accent); background: rgba(231, 91, 62, 0.08); }
+
+    .auth-description {
+      margin: 12px 0 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .auth-form { display: grid; gap: 14px; }
+
+    .auth-field { display: grid; gap: 7px; }
+
+    .auth-field span {
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .auth-field input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 15px;
+      color: var(--ink);
+      font: inherit;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      background: #fff;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(231, 91, 62, 0.1);
+    }
+
+    .auth-submit {
+      min-height: 52px;
+      margin-top: 3px;
+      color: #fff;
+      font: inherit;
+      font-weight: 900;
+      border: 0;
+      border-radius: 14px;
+      cursor: pointer;
+      background: var(--accent);
+      box-shadow: 0 9px 20px rgba(231, 91, 62, 0.22);
+    }
+
+    .auth-submit:disabled { opacity: 0.62; cursor: wait; }
+
+    .auth-message {
+      min-height: 20px;
+      margin: 0;
+      color: var(--accent-dark);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .auth-message.success { color: var(--green); }
+
+    .auth-switch {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .auth-switch button {
+      padding: 4px;
+      color: var(--accent);
+      font: inherit;
+      font-weight: 900;
+      border: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+
     @keyframes appear {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @media (max-width: 520px) {
       body { padding: 16px; }
       .app { padding: 28px 20px; border-radius: 24px; }
+      .top-row { align-items: center; }
+      .user-area { align-items: flex-end; flex-direction: column; }
+      .user-email { max-width: 145px; }
       .entry-row { flex-direction: column; }
       #add-button { min-height: 52px; }
       .priority-picker { justify-content: center; }
+      .auth-panel { padding: 25px 21px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -311,7 +510,16 @@
 </head>
 <body>
   <main class="app">
-    <p class="eyebrow">My daily list</p>
+    <div class="top-row">
+      <p class="eyebrow">My daily list</p>
+      <div id="auth-controls">
+        <button id="open-auth" class="auth-button" type="button">로그인</button>
+        <div id="user-area" class="user-area" hidden>
+          <span id="user-email" class="user-email"></span>
+          <button id="logout-button" class="logout-button" type="button">로그아웃</button>
+        </div>
+      </div>
+    </div>
     <h1>오늘의 할 일</h1>
     <p class="subtitle">해야 할 일을 가볍게 적고, 하나씩 완료해 보세요.</p>
 
@@ -340,6 +548,36 @@
     <ul id="todo-list"></ul>
   </main>
 
+  <dialog id="auth-dialog" class="auth-dialog">
+    <div class="auth-panel">
+      <div class="auth-heading-row">
+        <div>
+          <p class="auth-kicker">Welcome</p>
+          <h2 id="auth-title" class="auth-title">로그인</h2>
+        </div>
+        <button id="close-auth" class="close-dialog" type="button" aria-label="팝업 닫기">×</button>
+      </div>
+      <p id="auth-description" class="auth-description">이메일과 비밀번호로 로그인하세요.</p>
+      <form id="auth-form" class="auth-form">
+        <label class="auth-field">
+          <span>이메일</span>
+          <input id="auth-email" type="email" autocomplete="email" placeholder="name@example.com" required>
+        </label>
+        <label class="auth-field">
+          <span>비밀번호</span>
+          <input id="auth-password" type="password" autocomplete="current-password" placeholder="6자 이상 입력" minlength="6" required>
+        </label>
+        <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+        <button id="auth-submit" class="auth-submit" type="submit">로그인</button>
+        <p class="auth-switch">
+          <span id="auth-switch-text">아직 계정이 없나요?</span>
+          <button id="auth-switch-button" type="button">회원가입</button>
+        </p>
+      </form>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
   <script>
     const STORAGE_KEY = "daily-todos";
     const form = document.querySelector("#todo-form");
@@ -347,9 +585,150 @@
     const list = document.querySelector("#todo-list");
     const count = document.querySelector("#todo-count");
     const newPriority = document.querySelector("#new-priority");
+    const openAuthButton = document.querySelector("#open-auth");
+    const userArea = document.querySelector("#user-area");
+    const userEmail = document.querySelector("#user-email");
+    const logoutButton = document.querySelector("#logout-button");
+    const authDialog = document.querySelector("#auth-dialog");
+    const closeAuthButton = document.querySelector("#close-auth");
+    const authForm = document.querySelector("#auth-form");
+    const authTitle = document.querySelector("#auth-title");
+    const authDescription = document.querySelector("#auth-description");
+    const authEmail = document.querySelector("#auth-email");
+    const authPassword = document.querySelector("#auth-password");
+    const authMessage = document.querySelector("#auth-message");
+    const authSubmit = document.querySelector("#auth-submit");
+    const authSwitchText = document.querySelector("#auth-switch-text");
+    const authSwitchButton = document.querySelector("#auth-switch-button");
 
     let todos = loadTodos();
     let selectedPriority = 1;
+    let supabaseClient = null;
+    let authMode = "login";
+    let authInitError = "";
+
+    async function initAuth() {
+      try {
+        const response = await fetch("/api/supabase-config", { cache: "no-store" });
+        const config = await response.json();
+
+        if (!response.ok) throw new Error(config.error || "Supabase 설정을 불러오지 못했습니다.");
+        if (!window.supabase?.createClient) throw new Error("Supabase 라이브러리를 불러오지 못했습니다.");
+
+        supabaseClient = window.supabase.createClient(config.url, config.key);
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+
+        renderAuth(session);
+        supabaseClient.auth.onAuthStateChange((_event, nextSession) => {
+          renderAuth(nextSession);
+        });
+      } catch (error) {
+        authInitError = error.message || "로그인 서비스를 초기화하지 못했습니다.";
+        openAuthButton.title = "Vercel의 Supabase 환경변수를 확인해 주세요.";
+      }
+    }
+
+    function renderAuth(session) {
+      const email = session?.user?.email;
+      openAuthButton.hidden = Boolean(email);
+      userArea.hidden = !email;
+      userEmail.textContent = email || "";
+
+      if (email && authDialog.open) {
+        authDialog.close();
+        authForm.reset();
+      }
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const isLogin = mode === "login";
+      authTitle.textContent = isLogin ? "로그인" : "회원가입";
+      authDescription.textContent = isLogin
+        ? "이메일과 비밀번호로 로그인하세요."
+        : "이메일로 계정을 만들고 할 일을 시작하세요.";
+      authSubmit.textContent = isLogin ? "로그인" : "회원가입";
+      authSwitchText.textContent = isLogin ? "아직 계정이 없나요?" : "이미 계정이 있나요?";
+      authSwitchButton.textContent = isLogin ? "회원가입" : "로그인";
+      authPassword.autocomplete = isLogin ? "current-password" : "new-password";
+      authMessage.textContent = "";
+      authMessage.classList.remove("success");
+    }
+
+    function showAuthMessage(message, success = false) {
+      authMessage.textContent = message;
+      authMessage.classList.toggle("success", success);
+    }
+
+    function friendlyAuthError(error) {
+      const message = error?.message || "요청을 처리하지 못했습니다.";
+      if (/invalid login credentials/i.test(message)) return "이메일 또는 비밀번호가 올바르지 않습니다.";
+      if (/email not confirmed/i.test(message)) return "이메일 인증을 완료한 뒤 로그인해 주세요.";
+      if (/user already registered/i.test(message)) return "이미 가입된 이메일입니다. 로그인해 주세요.";
+      if (/password should be at least/i.test(message)) return "비밀번호는 6자 이상 입력해 주세요.";
+      return message;
+    }
+
+    openAuthButton.addEventListener("click", () => {
+      setAuthMode("login");
+      authDialog.showModal();
+      if (authInitError) showAuthMessage(authInitError);
+      authEmail.focus();
+    });
+
+    closeAuthButton.addEventListener("click", () => authDialog.close());
+
+    authDialog.addEventListener("click", (event) => {
+      if (event.target === authDialog) authDialog.close();
+    });
+
+    authSwitchButton.addEventListener("click", () => {
+      setAuthMode(authMode === "login" ? "signup" : "login");
+      authEmail.focus();
+    });
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabaseClient) {
+        showAuthMessage(authInitError || "로그인 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+      authSubmit.disabled = true;
+      showAuthMessage("");
+
+      try {
+        if (authMode === "signup") {
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) throw error;
+
+          if (!data.session) {
+            showAuthMessage("가입 확인 메일을 보냈습니다. 이메일 인증 후 로그인해 주세요.", true);
+            authPassword.value = "";
+            return;
+          }
+        } else {
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+        }
+      } catch (error) {
+        showAuthMessage(friendlyAuthError(error));
+      } finally {
+        authSubmit.disabled = false;
+      }
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      if (!supabaseClient) return;
+      logoutButton.disabled = true;
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) alert(friendlyAuthError(error));
+      logoutButton.disabled = false;
+    });
 
     function loadTodos() {
       try {
@@ -497,6 +876,7 @@
 
     renderNewPriority();
     renderTodos();
+    initAuth();
   </script>
 </body>
 </html>
