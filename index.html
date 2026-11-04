@@ -507,6 +507,262 @@
       *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
     }
   </style>
+  <style>
+    /* Notebook-style theme inspired by the supplied reference */
+    [hidden] { display: none !important; }
+
+    :root {
+      --ink: #303033;
+      --muted: #89878a;
+      --paper: #fffefc;
+      --line: #79cec8;
+      --accent: #d52f57;
+      --accent-dark: #b91f45;
+      --green: #56a7a2;
+      --star: #f3bd24;
+      --star-muted: #dedbd3;
+      --shadow: 18px 24px 48px rgba(27, 31, 38, 0.2);
+    }
+
+    body {
+      padding: 54px 20px;
+      background: #ececef;
+    }
+
+    .app {
+      width: min(100%, 760px);
+      min-height: 900px;
+      padding: 46px 64px 38px;
+      overflow: hidden;
+      border: 1px solid #e8e8e8;
+      border-radius: 2px;
+      background:
+        linear-gradient(rgba(255,255,255,0.96), rgba(255,255,255,0.96)),
+        repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.012) 3px 4px),
+        var(--paper);
+      box-shadow: var(--shadow);
+      backdrop-filter: none;
+    }
+
+    .app::before { display: none; }
+
+    .top-row {
+      min-height: 38px;
+      justify-content: flex-end;
+    }
+
+    .eyebrow { display: none; }
+
+    h1 {
+      margin: 12px 0 46px;
+      color: var(--accent);
+      font-family: "Avenir Next", Avenir, Helvetica, Arial, sans-serif;
+      font-size: clamp(2.6rem, 8vw, 4.65rem);
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .paper-date {
+      margin: 0 0 22px;
+      padding: 0 8px 8px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: baseline;
+      gap: 12px;
+      color: #34a8c2;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      border-bottom: 5px double #47b6ca;
+    }
+
+    #today-date {
+      min-width: 116px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-align: right;
+    }
+
+    .auth-button,
+    .logout-button {
+      color: var(--accent);
+      border-color: rgba(213, 47, 87, 0.34);
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .user-email { color: #707074; }
+
+    .input-row {
+      margin: 0 0 16px;
+      padding: 0 0 18px 96px;
+      border-bottom: 2px solid rgba(79, 190, 181, 0.62);
+    }
+
+    #todo-input {
+      min-height: 50px;
+      padding: 0 16px;
+      border: 1px solid rgba(79, 190, 181, 0.65);
+      border-radius: 3px;
+      background: rgba(255,255,255,0.82);
+      box-shadow: none;
+    }
+
+    #todo-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(213, 47, 87, 0.1);
+    }
+
+    #add-button {
+      padding: 0 25px;
+      border-radius: 3px;
+      background: var(--accent);
+      box-shadow: none;
+    }
+
+    #add-button:hover { background: var(--accent-dark); box-shadow: none; }
+
+    .priority-picker { margin-top: 10px; }
+
+    .lined-list {
+      position: relative;
+      min-height: 470px;
+      padding-bottom: 30px;
+    }
+
+    .lined-list::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      left: 82px;
+      width: 2px;
+      background: rgba(213, 47, 87, 0.62);
+      pointer-events: none;
+    }
+
+    .list-header {
+      height: 50px;
+      margin: 0;
+      padding: 0 8px 0 96px;
+      position: relative;
+      z-index: 1;
+      border-bottom: 2px solid rgba(79, 190, 181, 0.62);
+    }
+
+    #todo-list {
+      position: relative;
+      z-index: 1;
+      gap: 0;
+    }
+
+    .todo-item {
+      min-height: 72px;
+      padding: 8px 4px 8px 96px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 44px 38px;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-bottom: 2px solid rgba(79, 190, 181, 0.62);
+      border-radius: 0;
+      background: transparent;
+      animation: appear 0.25s ease both;
+    }
+
+    .todo-item.completed {
+      border-color: rgba(79, 190, 181, 0.62);
+      background: rgba(84, 172, 166, 0.045);
+    }
+
+    .todo-content {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .todo-check {
+      width: 34px;
+      height: 34px;
+      grid-column: 2;
+      grid-row: 1;
+      appearance: none;
+      border: 2px solid rgba(213, 47, 87, 0.72);
+      border-radius: 50%;
+      background: transparent;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+
+    .todo-check:hover { transform: scale(1.06); }
+
+    .todo-check:checked {
+      background-color: var(--accent);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 12 4 4 8-9' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 22px;
+      box-shadow: 0 3px 10px rgba(213, 47, 87, 0.22);
+    }
+
+    .delete-button {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .empty-state {
+      margin-left: 96px;
+      border-color: rgba(79, 190, 181, 0.62);
+      border-radius: 3px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    .subtitle {
+      margin: 28px 8px 0;
+      color: #aaa7a8;
+      font-family: Georgia, serif;
+      font-size: 0.82rem;
+      font-style: italic;
+      letter-spacing: 0.28em;
+      text-align: right;
+    }
+
+    .auth-dialog {
+      border: 1px solid rgba(213, 47, 87, 0.18);
+      border-radius: 4px;
+      background: #fffefc;
+    }
+
+    .auth-kicker,
+    .auth-switch button { color: var(--accent); }
+
+    .auth-title {
+      color: var(--ink);
+      font-family: "Avenir Next", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+    }
+
+    .auth-submit { border-radius: 3px; background: var(--accent); }
+
+    @media (max-width: 620px) {
+      body { padding: 16px; }
+      .app { min-height: calc(100vh - 32px); padding: 28px 18px 30px; border-radius: 2px; }
+      h1 { margin: 14px 0 34px; font-size: clamp(1.9rem, 10vw, 3rem); letter-spacing: 0.06em; white-space: nowrap; }
+      .paper-date { margin-bottom: 16px; }
+      .input-row { padding-left: 42px; }
+      .lined-list::before { left: 30px; }
+      .list-header { padding-left: 42px; }
+      .todo-item { padding-left: 42px; grid-template-columns: minmax(0, 1fr) 38px 34px; gap: 4px; }
+      .todo-check { width: 30px; height: 30px; }
+      .empty-state { margin-left: 42px; }
+      .priority-picker { justify-content: flex-start; }
+      .user-area { align-items: flex-end; }
+    }
+  </style>
 </head>
 <body>
   <main class="app">
@@ -520,8 +776,8 @@
         </div>
       </div>
     </div>
-    <h1>오늘의 할 일</h1>
-    <p class="subtitle">해야 할 일을 가볍게 적고, 하나씩 완료해 보세요.</p>
+    <h1>TO DO LIST</h1>
+    <div class="paper-date"><span>DATE.</span><time id="today-date"></time></div>
 
     <form id="todo-form" class="input-row">
       <div class="entry-row">
@@ -541,11 +797,14 @@
       </fieldset>
     </form>
 
-    <div class="list-header">
-      <span>할 일 목록</span>
-      <span id="todo-count" aria-live="polite">남은 할 일 0개</span>
-    </div>
-    <ul id="todo-list"></ul>
+    <section class="lined-list" aria-label="할 일 목록">
+      <div class="list-header">
+        <span>할 일 목록</span>
+        <span id="todo-count" aria-live="polite">남은 할 일 0개</span>
+      </div>
+      <ul id="todo-list"></ul>
+    </section>
+    <p class="subtitle">make my life awesome.</p>
   </main>
 
   <dialog id="auth-dialog" class="auth-dialog">
@@ -600,12 +859,20 @@
     const authSubmit = document.querySelector("#auth-submit");
     const authSwitchText = document.querySelector("#auth-switch-text");
     const authSwitchButton = document.querySelector("#auth-switch-button");
+    const todayDate = document.querySelector("#today-date");
 
     let todos = loadTodos();
     let selectedPriority = 1;
     let supabaseClient = null;
     let authMode = "login";
     let authInitError = "";
+
+    todayDate.dateTime = new Date().toISOString().slice(0, 10);
+    todayDate.textContent = new Intl.DateTimeFormat("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).format(new Date());
 
     async function initAuth() {
       try {
